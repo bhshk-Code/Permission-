@@ -1,4 +1,5 @@
 <!-- AbhPri Valentine Page 💖 -->
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -36,6 +37,7 @@
         border-radius: 12px;
         transition: all 0.2s;
         box-shadow: 0px 5px 15px rgba(0,0,0,0.2);
+        position: relative;
     }
 
     #yes {
@@ -61,6 +63,7 @@
         background: red;
         transform: rotate(-45deg);
         border-radius: 4px;
+        pointer-events: none;
     }
 
     .heart::before, .heart::after {
@@ -138,7 +141,7 @@
     <a class="imessage" href="sms:&body=Will you be my Valentine, Priyal? 💖" target="_blank">Share on iMessage</a>
 </div>
 
-<audio id="loveSong" src="https://www.bensound.com/bensound-music/bensound-love.mp3"></audio>
+<audio id="loveSong" src="love.mp3"></audio>
 
 <script>
 const yesBtn = document.getElementById('yes');
@@ -147,13 +150,13 @@ const song = document.getElementById('loveSong');
 let floatingHearts = [];
 let sparks = [];
 
-// Heart creation
+// Create a heart
 function createHeart(x, y, color) {
     const heart = document.createElement('div');
     heart.className = 'heart';
     heart.style.left = (x || Math.random() * window.innerWidth) + 'px';
     heart.style.top = (y || window.innerHeight) + 'px';
-    heart.style.backgroundColor = color || `hsl(${Math.random()*360}, 70%, 60%)`;
+    heart.style.backgroundColor = color || `hsl(${Math.random()*360},70%,60%)`;
     document.body.appendChild(heart);
     floatingHearts.push({el: heart, x: parseFloat(heart.style.left), y: parseFloat(heart.style.top), dx: Math.random()*2-1, dy: Math.random()*2-1});
 }
@@ -164,12 +167,12 @@ function createConfetti(x, y) {
     confetti.className = 'confetti-piece';
     confetti.style.left = (x || Math.random() * window.innerWidth) + 'px';
     confetti.style.top = (y || 0) + 'px';
-    confetti.style.backgroundColor = `hsl(${Math.random()*360}, 100%, 50%)`;
+    confetti.style.backgroundColor = `hsl(${Math.random()*360},100%,50%)`;
     document.body.appendChild(confetti);
     setTimeout(() => confetti.remove(), 3000);
 }
 
-// Animate hearts
+// Animate floating hearts
 function animateFloatingHearts() {
     floatingHearts.forEach(h => {
         h.x += h.dx;
@@ -182,76 +185,11 @@ function animateFloatingHearts() {
     requestAnimationFrame(animateFloatingHearts);
 }
 
-// Heart explosion
+// Explosion of hearts
 function explodeHearts(x, y) {
     for (let i = 0; i < 50; i++) {
         createHeart(x + (Math.random()*100-50), y + (Math.random()*100-50), `hsl(${Math.random()*360},70%,60%)`);
     }
-}
-
-// Firecracker with spark trails
-function firecracker(x, y) {
-    for (let i = 0; i < 40; i++) {
-        const spark = document.createElement('div');
-        spark.style.position = 'absolute';
-        spark.style.width = '6px';
-        spark.style.height = '6px';
-        spark.style.borderRadius = '50%';
-        spark.style.backgroundColor = `hsl(${Math.random()*360},100%,50%)`;
-        spark.style.left = x + 'px';
-        spark.style.top = y + 'px';
-        spark.style.pointerEvents = 'none';
-        document.body.appendChild(spark);
-
-        const angle = Math.random()*2*Math.PI;
-        const speed = Math.random()*6 + 3;
-        sparks.push({el: spark, x, y, dx: Math.cos(angle)*speed, dy: Math.sin(angle)*speed, trail: []});
-    }
-}
-
-// Animate sparks with trails
-function animateSparks() {
-    sparks.forEach((s, i) => {
-        s.x += s.dx;
-        s.y += s.dy;
-
-        // Add trail
-        const trail = document.createElement('div');
-        trail.style.position = 'absolute';
-        trail.style.width = '4px';
-        trail.style.height = '4px';
-        trail.style.borderRadius = '50%';
-        trail.style.left = s.x + 'px';
-        trail.style.top = s.y + 'px';
-        trail.style.backgroundColor = s.el.style.backgroundColor;
-        trail.style.opacity = 0.7;
-        trail.style.pointerEvents = 'none';
-        document.body.appendChild(trail);
-        s.trail.push(trail);
-
-        s.trail.forEach((t,j)=> {
-            t.style.opacity -= 0.05;
-            if (t.style.opacity <=0) {
-                t.remove();
-                s.trail.splice(j,1);
-            }
-        });
-
-        // Update spark position
-        s.el.style.left = s.x + 'px';
-        s.el.style.top = s.y + 'px';
-
-        // Bounce
-        if (s.x < 0 || s.x > window.innerWidth-6) s.dx *= -1;
-        if (s.y < 0 || s.y > window.innerHeight-6) s.dy *= -1;
-
-        s.el.style.opacity -= 0.02;
-        if (s.el.style.opacity <= 0) {
-            s.el.remove();
-            sparks.splice(i,1);
-        }
-    });
-    requestAnimationFrame(animateSparks);
 }
 
 // Floating message
@@ -270,22 +208,12 @@ setInterval(()=> {
     document.body.style.background = `linear-gradient(135deg, hsl(${Math.random()*360},70%,90%), hsl(${Math.random()*360},80%,95%))`;
 },8000);
 
-// Confetti rain
-function startConfetti() {
-    setInterval(()=> {
-        for(let i=0;i<10;i++) createConfetti();
-    },500);
-}
-
 // Yes button click
 yesBtn.addEventListener('click', (e) => {
     alert('Yay! 💖 You made my day!');
     song.play();
     explodeHearts(e.clientX, e.clientY);
-    firecracker(e.clientX, e.clientY);
-    animateSparks();
     showMessage("You made my day! 💖", e.clientX, e.clientY);
-    startConfetti();
     animateFloatingHearts();
     yesBtn.disabled = true;
     noBtn.disabled = true;
@@ -300,10 +228,14 @@ noBtn.addEventListener('mouseover', ()=>{
 });
 noBtn.addEventListener('click',()=>{ alert('Wrong answer! 😆'); });
 
-// Cursor hearts + confetti
+// Limit cursor hearts and confetti creation
+let mouseThrottle = 0;
 document.addEventListener('mousemove',(e)=>{
-    createHeart(e.clientX,e.clientY);
-    createConfetti(e.clientX,e.clientY);
+    mouseThrottle++;
+    if(mouseThrottle % 5 === 0) {
+        createHeart(e.clientX,e.clientY);
+        createConfetti(e.clientX,e.clientY);
+    }
 });
 </script>
 </body>
