@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+<!-- AbhPri Valentine Page 💖 -->
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -63,8 +64,7 @@
         border-radius: 4px;
     }
 
-    .heart::before,
-    .heart::after {
+    .heart::before, .heart::after {
         content: "";
         position: absolute;
         width: 25px;
@@ -146,8 +146,9 @@ const yesBtn = document.getElementById('yes');
 const noBtn = document.getElementById('no');
 const song = document.getElementById('loveSong');
 let floatingHearts = [];
+let sparks = [];
 
-// Create heart
+// Heart creation
 function createHeart(x, y, color) {
     const heart = document.createElement('div');
     heart.className = 'heart';
@@ -158,7 +159,7 @@ function createHeart(x, y, color) {
     floatingHearts.push({el: heart, x: parseFloat(heart.style.left), y: parseFloat(heart.style.top), dx: Math.random()*2-1, dy: Math.random()*2-1});
 }
 
-// Create heart-shaped confetti
+// Confetti
 function createConfetti(x, y) {
     const confetti = document.createElement('div');
     confetti.className = 'confetti-piece';
@@ -169,24 +170,89 @@ function createConfetti(x, y) {
     setTimeout(() => confetti.remove(), 3000);
 }
 
-// Animate floating hearts
+// Animate hearts
 function animateFloatingHearts() {
-    floatingHearts.forEach((heartObj) => {
-        heartObj.x += heartObj.dx;
-        heartObj.y += heartObj.dy;
-        heartObj.el.style.left = heartObj.x + 'px';
-        heartObj.el.style.top = heartObj.y + 'px';
-        if (heartObj.x < 0 || heartObj.x > window.innerWidth-25) heartObj.dx *= -1;
-        if (heartObj.y < 0 || heartObj.y > window.innerHeight-25) heartObj.dy *= -1;
+    floatingHearts.forEach(h => {
+        h.x += h.dx;
+        h.y += h.dy;
+        h.el.style.left = h.x + 'px';
+        h.el.style.top = h.y + 'px';
+        if (h.x < 0 || h.x > window.innerWidth-25) h.dx *= -1;
+        if (h.y < 0 || h.y > window.innerHeight-25) h.dy *= -1;
     });
     requestAnimationFrame(animateFloatingHearts);
 }
 
 // Heart explosion
 function explodeHearts(x, y) {
-    for (let i = 0; i < 40; i++) {
-        createHeart(x + (Math.random()*80-40), y + (Math.random()*80-40));
+    for (let i = 0; i < 50; i++) {
+        createHeart(x + (Math.random()*100-50), y + (Math.random()*100-50), `hsl(${Math.random()*360},70%,60%)`);
     }
+}
+
+// Firecracker with spark trails
+function firecracker(x, y) {
+    for (let i = 0; i < 40; i++) {
+        const spark = document.createElement('div');
+        spark.style.position = 'absolute';
+        spark.style.width = '6px';
+        spark.style.height = '6px';
+        spark.style.borderRadius = '50%';
+        spark.style.backgroundColor = `hsl(${Math.random()*360},100%,50%)`;
+        spark.style.left = x + 'px';
+        spark.style.top = y + 'px';
+        spark.style.pointerEvents = 'none';
+        document.body.appendChild(spark);
+
+        const angle = Math.random()*2*Math.PI;
+        const speed = Math.random()*6 + 3;
+        sparks.push({el: spark, x, y, dx: Math.cos(angle)*speed, dy: Math.sin(angle)*speed, trail: []});
+    }
+}
+
+// Animate sparks with trails
+function animateSparks() {
+    sparks.forEach((s, i) => {
+        s.x += s.dx;
+        s.y += s.dy;
+
+        // Add trail
+        const trail = document.createElement('div');
+        trail.style.position = 'absolute';
+        trail.style.width = '4px';
+        trail.style.height = '4px';
+        trail.style.borderRadius = '50%';
+        trail.style.left = s.x + 'px';
+        trail.style.top = s.y + 'px';
+        trail.style.backgroundColor = s.el.style.backgroundColor;
+        trail.style.opacity = 0.7;
+        trail.style.pointerEvents = 'none';
+        document.body.appendChild(trail);
+        s.trail.push(trail);
+
+        s.trail.forEach((t,j)=> {
+            t.style.opacity -= 0.05;
+            if (t.style.opacity <=0) {
+                t.remove();
+                s.trail.splice(j,1);
+            }
+        });
+
+        // Update spark position
+        s.el.style.left = s.x + 'px';
+        s.el.style.top = s.y + 'px';
+
+        // Bounce
+        if (s.x < 0 || s.x > window.innerWidth-6) s.dx *= -1;
+        if (s.y < 0 || s.y > window.innerHeight-6) s.dy *= -1;
+
+        s.el.style.opacity -= 0.02;
+        if (s.el.style.opacity <= 0) {
+            s.el.remove();
+            sparks.splice(i,1);
+        }
+    });
+    requestAnimationFrame(animateSparks);
 }
 
 // Floating message
@@ -197,19 +263,19 @@ function showMessage(text, x, y) {
     msg.style.left = x + 'px';
     msg.style.top = y + 'px';
     document.body.appendChild(msg);
-    setTimeout(() => msg.remove(), 3000);
+    setTimeout(()=>msg.remove(),3000);
 }
 
 // Background gradient animation
-setInterval(() => {
+setInterval(()=> {
     document.body.style.background = `linear-gradient(135deg, hsl(${Math.random()*360},70%,90%), hsl(${Math.random()*360},80%,95%))`;
-}, 8000);
+},8000);
 
 // Confetti rain
 function startConfetti() {
-    setInterval(() => {
-        for (let i = 0; i < 10; i++) createConfetti();
-    }, 500);
+    setInterval(()=> {
+        for(let i=0;i<10;i++) createConfetti();
+    },500);
 }
 
 // Yes button click
@@ -217,6 +283,8 @@ yesBtn.addEventListener('click', (e) => {
     alert('Yay! 💖 You made my day!');
     song.play();
     explodeHearts(e.clientX, e.clientY);
+    firecracker(e.clientX, e.clientY);
+    animateSparks();
     showMessage("You made my day! 💖", e.clientX, e.clientY);
     startConfetti();
     animateFloatingHearts();
@@ -224,22 +292,19 @@ yesBtn.addEventListener('click', (e) => {
     noBtn.disabled = true;
 });
 
-// No button dodging
-noBtn.addEventListener('mouseover', () => {
-    noBtn.style.position = 'absolute';
-    noBtn.style.top = Math.random() * (window.innerHeight - 50) + 'px';
-    noBtn.style.left = Math.random() * (window.innerWidth - 100) + 'px';
-    noBtn.style.transform = `rotate(${Math.random()*30-15}deg)`;
+// No button dodge
+noBtn.addEventListener('mouseover', ()=>{
+    noBtn.style.position='absolute';
+    noBtn.style.top=Math.random()*(window.innerHeight-50)+'px';
+    noBtn.style.left=Math.random()*(window.innerWidth-100)+'px';
+    noBtn.style.transform=`rotate(${Math.random()*30-15}deg)`;
 });
+noBtn.addEventListener('click',()=>{ alert('Wrong answer! 😆'); });
 
-noBtn.addEventListener('click', () => {
-    alert('Wrong answer! 😆');
-});
-
-// Cursor hearts + confetti trail
-document.addEventListener('mousemove', (e) => {
-    createHeart(e.clientX, e.clientY);
-    createConfetti(e.clientX, e.clientY);
+// Cursor hearts + confetti
+document.addEventListener('mousemove',(e)=>{
+    createHeart(e.clientX,e.clientY);
+    createConfetti(e.clientX,e.clientY);
 });
 </script>
 </body>
