@@ -1,11 +1,11 @@
-# Permission-
+# Permission
 Be my valentine 
-<Will you be my valentine>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Important Question 💘</title>
+  <title>Priyal 💘</title>
 
   <!-- Instagram preview -->
   <meta property="og:title" content="Priyal, will you be my Valentine? 💕" />
@@ -37,13 +37,20 @@ Be my valentine
     }
 
     h1 {
-      font-size: 1.6rem;
+      font-size: 1.7rem;
       margin-bottom: 10px;
     }
 
     p {
-      margin-bottom: 20px;
+      margin-bottom: 18px;
       color: #666;
+      font-size: 0.95rem;
+    }
+
+    .hint {
+      font-size: 0.8rem;
+      color: #999;
+      margin-bottom: 12px;
     }
 
     button {
@@ -114,7 +121,6 @@ Be my valentine
       position: absolute;
       width: 8px;
       height: 8px;
-      background: red;
       animation: fall 2.5s linear forwards;
     }
 
@@ -127,14 +133,15 @@ Be my valentine
 
 <body>
 
-  <!-- Autoplay music -->
-  <audio autoplay loop>
+  <!-- Music (plays on first interaction) -->
+  <audio id="music" loop>
     <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg">
   </audio>
 
-  <div class="card">
-    <h1>Hey Priyal 💕</h1>
-    <p>Very serious question. Think carefully.</p>
+  <div class="card" onclick="playMusic()">
+    <h1>Priyal, will you be my Valentine? 💘</h1>
+    <p>Please answer carefully… there is only one correct option 😌</p>
+    <div class="hint">🔊 Tap anywhere to play music</div>
 
     <button class="yes" onclick="sayYes()">YES 💖</button>
     <button class="no" id="noBtn">NO 🙃</button>
@@ -148,6 +155,15 @@ Be my valentine
 
   <script>
     const noBtn = document.getElementById("noBtn");
+    const music = document.getElementById("music");
+    let musicPlayed = false;
+
+    function playMusic() {
+      if (!musicPlayed) {
+        music.play();
+        musicPlayed = true;
+      }
+    }
 
     function moveNo() {
       const x = Math.random() * (window.innerWidth - 120);
@@ -165,9 +181,11 @@ Be my valentine
     });
 
     function sayYes() {
+      playMusic();
       document.querySelector(".yes").style.display = "none";
       noBtn.style.display = "none";
       document.querySelector("p").style.display = "none";
+      document.querySelector(".hint").style.display = "none";
       document.getElementById("message").style.display = "block";
       confettiBoom();
     }
