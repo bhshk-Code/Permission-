@@ -1,10 +1,9 @@
-<!-- AbhPri Valentine Page 💖 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Valentine for Priyal 💖</title>
+<title>Valentine for Priyal</title>
 <style>
     body {
         font-family: 'Comic Sans MS', sans-serif;
@@ -141,6 +140,7 @@
     <a class="imessage" href="sms:&body=Will you be my Valentine, Priyal? 💖" target="_blank">Share on iMessage</a>
 </div>
 
+<!-- Place a file named 'love.mp3' in the same repo -->
 <audio id="loveSong" src="love.mp3"></audio>
 
 <script>
@@ -148,7 +148,6 @@ const yesBtn = document.getElementById('yes');
 const noBtn = document.getElementById('no');
 const song = document.getElementById('loveSong');
 let floatingHearts = [];
-let sparks = [];
 
 // Create a heart
 function createHeart(x, y, color) {
@@ -161,7 +160,7 @@ function createHeart(x, y, color) {
     floatingHearts.push({el: heart, x: parseFloat(heart.style.left), y: parseFloat(heart.style.top), dx: Math.random()*2-1, dy: Math.random()*2-1});
 }
 
-// Confetti
+// Create confetti
 function createConfetti(x, y) {
     const confetti = document.createElement('div');
     confetti.className = 'confetti-piece';
@@ -185,7 +184,7 @@ function animateFloatingHearts() {
     requestAnimationFrame(animateFloatingHearts);
 }
 
-// Explosion of hearts
+// Explode hearts
 function explodeHearts(x, y) {
     for (let i = 0; i < 50; i++) {
         createHeart(x + (Math.random()*100-50), y + (Math.random()*100-50), `hsl(${Math.random()*360},70%,60%)`);
@@ -228,7 +227,7 @@ noBtn.addEventListener('mouseover', ()=>{
 });
 noBtn.addEventListener('click',()=>{ alert('Wrong answer! 😆'); });
 
-// Limit cursor hearts and confetti creation
+// Limit cursor hearts/confetti creation
 let mouseThrottle = 0;
 document.addEventListener('mousemove',(e)=>{
     mouseThrottle++;
@@ -238,5 +237,6 @@ document.addEventListener('mousemove',(e)=>{
     }
 });
 </script>
+
 </body>
 </html>
